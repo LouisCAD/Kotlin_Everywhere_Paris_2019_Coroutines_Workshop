@@ -21,7 +21,7 @@
 2. Kotlin (dont kotlinc) : `suspend`, intrinsics
 3. kotlinx.coroutines (x for eXtension): API haut niveau, et intégrations variées (Rx, Android, Swing, JavaFx, Google Play Services / Firebase, etc), exploration au cours du workshop
 
-### Quite à attendre, commençons par allonger les délais…
+### Quitte à attendre, commençons par allonger les délais…
 
 (Pratique de l'usage des coroutines avec `delay` pour stubber des interfaces)
 

@@ -31,14 +31,32 @@ Kotlin 1.3 est sorti durant l'automne 2018, rendant les coroutines stables, avec
 
 #### Qui fait quoi
 
-Vous l'aurez compris, l'API fourni dans la stdlib Kotlin étant minimaliste et bas niveau, nous allons peu nous en servir.
+Vous l'aurez compris, **l'API fourni dans la stdlib Kotlin** étant **minimaliste et bas niveau**, nous allons peu nous en servir directement.
 
-Nous allons beaucoup utiliser le modifieur `suspend` devant les fonctions, qui les déclare non bloquantes, les autorisant alors à appeler d'autres fonctions `suspend`.
+Nous allons beaucoup utiliser **le modifieur `suspend`** devant les fonctions, qui les déclare non bloquantes, les autorisant alors à appeler d'autres fonctions `suspend`.
 
-Il nous est fourni par le langage Kotlin lui même, et le compilateur s'occupe de les réécrire sous forme de "continuations", de sorte qu'elles fonctionnent pour les différents "targets" de Kotlin (JVM, Android, JS, Native, WebAssembly…), et ce, sans nécessiter un "runtime" spécifique.
+Il nous est **fourni par le langage Kotlin** lui même, et le compilateur s'occupe de les réécrire sous forme de "continuations", de sorte qu'elles fonctionnent pour les différents "targets" de Kotlin (JVM, Android, JS, Native, WebAssembly…), et ce, sans nécessiter un "runtime" spécifique.
 
-Le reste est fourni par la bibliothèque multiplateforme kotlinx.coroutines, qui a un cycle de release plus fréquent que le langage Kotlin lui-même. Cela comporte la concurrence structurée, de quoi lancer des coroutines concurrentes, le support de l'annulation, TK
+**Le reste** est fourni par la **bibliothèque multiplateforme kotlinx.coroutines**, qui a un cycle de release plus fréquent que le langage Kotlin lui-même.
+
+Voici une liste non exhaustive de ce que cela comporte :
+- la concurrence structurée et le support de l'annulation (spoiler: killer feature)
+- de quoi lancer des coroutines concurrentes très facilement (la base)
+- de quoi changer de contexte d'exécution (ex: thread ou thread pool) très facilement
+- de quoi passer d'un callback annulable à une fonction `suspend` annulable
+- de quoi communiquer entre plusieurs coroutines et callbacks (facilement, encore)
+- de quoi créer et traiter des flux de valeurs avec une grande simplicité
+- des intégrations optionelles avec Android, RxJava, JavaFx, Java Swing, JS promises, Firebase & Google Play Services Android, etc.
+
+Vous allez découvrir les bases essentielles dans ce workshop.
+Vous aurez ensuite le loisir de poursuivre les essais et l'exploration, prenant alors
+part à cette véritable révolution industrielle que sont les coroutines de Kotlin et la
+concurrence structurée.
+
+### Quitte à attendre, commençons par allonger les délais…
 
 TK
 
+### Changer de ~thread~ dispatcher : un jeu d'enfant !
 
+TK
