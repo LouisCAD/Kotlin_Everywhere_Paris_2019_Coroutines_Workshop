@@ -1,3 +1,4 @@
 rootProject.name = "Kotlin Everywhere Paris 2019 Coroutines Workshop"
 include("exercises")
 include("server")
+include("samplecode")
