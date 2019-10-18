@@ -16,7 +16,7 @@ inline fun <R> withEnterAndExitLog(name: String, block: () -> R): R {
         println("$name: returned in ${startClockMark.elapsedNow().toLongMilliseconds()}ms")
         return returnValue
     } catch (t: Throwable) {
-        println("$name threw after ${startClockMark.elapsedNow().toLongMilliseconds()}ms")
+        println("$name: threw after ${startClockMark.elapsedNow().toLongMilliseconds()}ms")
         throw t
     }
 }
