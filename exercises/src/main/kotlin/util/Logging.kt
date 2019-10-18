@@ -30,3 +30,6 @@ inline fun <R> withEnterAndExitLog(name: String, block: () -> R): R {
         throw t
     }
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun log(message: Any?) = println(message)
