@@ -18,10 +18,10 @@
 (Explication de ce que fait Kotlin, de ce que fait kotlinx.coroutines, et pourquoi pas directement dans la stdlib)
 
 1. Kotlin stdlib : CoroutineContext, Continuation, startCoroutine, suspendCoroutine, etc
-2. Kotlin (dont kotlinc) : `suspend`, intrisics
+2. Kotlin (dont kotlinc) : `suspend`, intrinsics
 3. kotlinx.coroutines (x for eXtension): API haut niveau, et intégrations variées (Rx, Android, Swing, JavaFx, Google Play Services / Firebase, etc), exploration au cours du workshop
 
-### Quitte à attendre, commençons par allonger les délais…
+### Quite à attendre, commençons par allonger les délais…
 
 (Pratique de l'usage des coroutines avec `delay` pour stubber des interfaces)
 
@@ -46,44 +46,35 @@
 ### Concurrence structurée : vous ne pourrez plus vous en passer !
 
 1. Les problèmes de concurrence
+2. Opérations en parallèle avec async/await
+3. Gestion de l'échec d'un coroutine: Job/SupervisorJob
+4. Complétion du scope et de ses coroutines
+5. Annulation du scope, `isActive` et resume
 
-### Partie n + 1
+### Gestion des exceptions
 
-### Partie n + 2
+1. try/catch !
+2. Remplacer par un `ExceptionHandler` dans le contexte coroutine courant
 
-### Partie n + 3
+### Custom coroutine
 
-### Partie n + 4
+1. Crée sa propre coroutine avec `suspendCoroutine`
+2. Gérer l'annulation
+3. En faire une fonction générique
 
-### Partie n + 5
+### Channels
 
-### Partie n + 6
+1. 
 
-### Partie n + 7
+### Actors
 
-### Partie n + 8
+1. Exécution séquentielles de `suspend` functions
+2. Les différentes capacités
+3. Gérer la backpressure, `offer` vs `send`
+4. Gérer la cloture d'un actor avec `CompletionHandler`
 
-### Partie n + 9
+### Flows
 
-### Partie n + 10
-
-### Partie n + 11
-
-### Partie n + 12
-
-### Partie n + 13
-
-### Partie n + 14
-
-### Partie n + 15
-
-### Partie n + 16
-
-### Partie n + 17
-
-### Partie n + 18
-
-### Partie n + 19
-
-### Partie n + 20
-
+1. Flow simple pour commencer, valider que les flows sont "froids"
+2. Jouons avec les différents opérateurs
+2. Flow pour wrapper des callbacks
