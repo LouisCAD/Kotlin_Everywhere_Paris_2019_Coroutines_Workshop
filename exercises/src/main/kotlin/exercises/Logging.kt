@@ -1,4 +1,4 @@
-package util
+package exercises
 
 import kotlinx.coroutines.CancellationException
 import kotlin.contracts.ExperimentalContracts

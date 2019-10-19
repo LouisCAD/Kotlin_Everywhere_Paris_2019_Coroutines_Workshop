@@ -1,5 +1,5 @@
-import util.log
-import util.withEnterAndExitLog
+import exercises.log
+import exercises.withEnterAndExitLog
 
 fun main() {
     withEnterAndExitLog("main") {

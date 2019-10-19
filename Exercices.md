@@ -108,10 +108,57 @@ Mais comment est-ce possible ? `delay` est appelée par la lambda donnée à `wi
 
 La stdlib de Kotlin est pourvue d'un grand nombre de fonctions `inline`, et si vous utilisez déjà Kotlin, il est fort probable que vous en utilisiez provenant de diverses bibliothèques, et que vous en ayez même déjà écrit. Eh bien ça fonctionne très bien avec les coroutines !
  
- ▶️ Exécutez le programme à nouveau et observez les logs pour voir ce qu'il se passe.
+▶️ Exécutez le programme à nouveau et observez les logs pour voir ce qu'il se passe.
  
- Vous constatez l'utilité de notre fonction `withEnterAndExitLog` pour apprendre !
+ Vous constatez l'utilité de notre fonction `withEnterAndExitLog` pour apprendre ! N'hésitez pas à vous en servir pour les exercices suivants, autour du code à tester, et dans des sous parties, avec différents tags. Ça deviendra très intéressant lorsqu'on va exécuter plusieurs coroutines en même temps.
+ 
+ℹ️ Il faut savoir que kotlinx.coroutines vous fournit tous les outils pour transformer n'importe quelle API à base de callbacks ou de code en bloquant en fonctions `suspend`, et une fois que vous avez fait cela, l'utilisation sera aussi simple que ce que vous venez de voir, et vous pourrez enchaîner les appels naturellement, utiliser les variables locales, les `if`/`else`, les `when`, les boucles et bien sûr les lambdas inline.
+
+Vous pouvez effectuer d'autres essais dans [exercises/exo1-delay.kt](exercises/src/main/kotlin/exercises/exo1-delay.kt), mais n'oubliez pas de passer à la suite.
 
 ### Changer de ~thread~ dispatcher : un jeu d'enfant !
 
-TK
+Il y a des cas où l'on a une API bloquante à notre disposition, mais on ne veut pas pour autant bloquer le thread appelant pour demander le traitement. La solution est alors de bloquer un certain thread autre que le thread appelant, et faire en sorte que notre coroutine attente que ce thread ait finit son travail bloquant.
+
+C'est la fonction `withContext` de kotlinx.coroutines qui va nous permettre de changer de contexte d'exécution, notamment de `CoroutineDispatcher` (une classe abstraite de kotlinx.coroutines qui implémente l'interface `CoroutineInterceptor` de la stdlib).
+
+4 `Dispatchers` sont fournis d'entrée pour des usages différents, vous pouvez retrouver [la documentation ici](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/) ou dans votre IDE.
+
+Vous pouvez aussi créer votre propre dispatcher, par exemple avec l'extension `asCoroutineDispatcher()` sur `Executor`.
+
+Utilisez le fichier [exercises/exo2-withContext.kt](exercises/src/main/kotlin/exercises/exo2-withContext.kt) pour le code de cet exercice, et appelez `playWithWithContext` depuis la fonction `main` de tout à l'heure dans `main.kt` ou une nouvelle directement dans le fichier de l'exercice. Vous avez carte blanche pour comment vous vous organisez, si vous voulez vous organiser.
+
+▶️ Faites un essai avec `Dispatchers.Default` pour "la réponse ultime". Expérimentez ensuite avec les autres fonctions présentes.
+
+### Concurrence structurée : vous ne pourrez plus vous en passer !
+
+La concurrence n'est pas un problème simple.
+
+Prenons un exemple très classique :
+Vous faites deux appels réseau en même temps dans le but de fusionner leur résultat. Vous lancez deux traitement en parallèle, mais l'un des deux échoue. Le deuxième continue son bonhomme de chemin alors que l'échec de l'opération finale est inévitable. Pourquoi continuer la première requête ? C'est du gaspillage de batterie, d'énergie, de CPU, de bande passante, etc !
+
+Il est possible d'annuler les appels réseaux. Si seulement c'était simple… eh bien Retrofit 2.6.2+ (JVM) et ktor (multiplateforme) supportent tous les deux l'annulation des appels réseaux en cours. Pour vous, ça fonctionne comme si vous annuliez un appel à `delay`, donc dans nos exemples, on va continuer d'utiliser `delay`.
+
+La concurrence structurée nous permet de déclarer un scope (essayez d'utiliser le scope le plus petit possible pour limiter la propagation des erreurs et faciliter le "recovery"). Ce `CoroutineScope` va alors nous permettre de lancer des coroutines filles de manière concurrente avec `launch`, ou avec `async` si nous voulons récupérer la valeur de retour plus tard.
+
+
+Dans le fichier [exercises/exo3-structured-concurrency.kt](exercises/src/main/kotlin/exercises/exo3-structured-concurrency.kt), nous avons mis plusieurs fonctions `suspend` pour tester.
+
+Commencez par essayer de lancer une seconde coroutine avec `launch`, à l'intérieur de la lambda de `coroutineScope` et observez le comportement.
+
+Essayez ensuite d'annuler une des coroutines lancées avec `cancel()` sur le `Job` retourné par `launch`
+
+Regardez ensuite le comportement lorsque vous faites crasher (par exemple avec `null!!`) une coroutine fille, notamment l'impact sur les autres coroutines du scope.
+
+Pour gérer les exceptions, il suffit d'utiliser `try`/`catch`/`finally`, comme si le code était bloquant ! Si vous faites du RxJava, ici, utiliser `try`/`catch` n'est PAS un code smell mais bien la manière la plus simple et correcte de gérer les `Throwable`/`Exception`. Ceci dit… **ATTENTION !** Il ne faut pas "catcher" les `CancellationException` car elles permettent le bon fonctionnement de l'annulation. Ou si vous le faites, détectez-le et refaites un `throw e`. D'ailleurs, le lancer d'une `CancellationException` ne fait pas crasher les coroutines filles, `launch` va le "gober". Pratique !
+
+Rajoutez en d'autres éventuellement, puis essayez de fusionner des valeurs de coroutines concurrentes en utilisant `async { ... }` et `await()`. Notez que `async` retourne un `Deferred<T>`, mais ce type est aussi un `Job`, vous pouvez donc aussi l'annuler avec `cancel()`.
+
+Essayez ensuite de remplacer `coroutineScope` par `withContext(coroutineContext)`. Observez-vous un quelquonque changement ?
+
+Non. En effet, `withContext` crée aussi un `CoroutineScope` ce qui permet d'attendre toutes les coroutines lancées dans le scope, y compris en cas de crash ou d'annulation.
+
+### Suite : freestyle
+
+Quand vous avez terminé, tenez-nous au courant (ou levez le bras si on discute déjà avec un autre participant). On vous guidera pour aller plus loin avec les coroutines en fonction de ce qui vous intéresse ou de vos projets et des plateformes que vous ciblez (nous connaissons bien Kotlin/JVM, Kotlin/Android et Kotlin/Native).
+

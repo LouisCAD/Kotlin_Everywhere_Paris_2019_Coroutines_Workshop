@@ -17,5 +17,10 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
+    val experimentalAnnotations = listOf(
+        "kotlin.Experimental",
+        "kotlin.time.ExperimentalTime"
+    )
+    kotlinOptions.freeCompilerArgs = experimentalAnnotations.map { "-Xuse-experimental=$it"}
     kotlinOptions.jvmTarget = "1.8"
 }
