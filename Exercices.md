@@ -150,7 +150,7 @@ Essayez ensuite d'annuler une des coroutines lancées avec `cancel()` sur le `Jo
 
 Regardez ensuite le comportement lorsque vous faites crasher (par exemple avec `null!!`) une coroutine fille, notamment l'impact sur les autres coroutines du scope.
 
-Pour gérer les exceptions, il suffit d'utiliser `try`/`catch`/`finally`, comme si le code était bloquant ! Si vous faites du RxJava, ici, utiliser `try`/`catch` n'est PAS un code smell mais bien la manière la plus simple et correcte de gérer les `Throwable`/`Exception`. Ceci dit… **ATTENTION !** Il ne faut pas "catcher" les `CancellationException` car elles permettent le bon fonctionnement de l'annulation. Ou si vous le faites, détectez-le et refaites un `throw e`. D'ailleurs, le lancer d'une `CancellationException` ne fait pas crasher les coroutines filles, `launch` va le "gober". Pratique !
+**Pour gérer les exceptions**, il suffit d'utiliser `try`/`catch`/`finally`, comme si le code était bloquant ! Si vous faites du RxJava, ici, utiliser `try`/`catch` n'est PAS un code smell mais bien la manière la plus simple et correcte de gérer les `Throwable`/`Exception`. Ceci dit… **ATTENTION !** Il ne faut pas "catcher" les `CancellationException` car elles permettent le bon fonctionnement de l'annulation. Ou si vous le faites, détectez-le et refaites un `throw e`. D'ailleurs, le lancer d'une `CancellationException` ne fait pas crasher les coroutines filles, `launch` va le "gober". Pratique !
 
 Rajoutez en d'autres éventuellement, puis essayez de fusionner des valeurs de coroutines concurrentes en utilisant `async { ... }` et `await()`. Notez que `async` retourne un `Deferred<T>`, mais ce type est aussi un `Job`, vous pouvez donc aussi l'annuler avec `cancel()`.
 
@@ -158,7 +158,17 @@ Essayez ensuite de remplacer `coroutineScope` par `withContext(coroutineContext)
 
 Non. En effet, `withContext` crée aussi un `CoroutineScope` ce qui permet d'attendre toutes les coroutines lancées dans le scope, y compris en cas de crash ou d'annulation.
 
+### Du callback à la coroutine
+
+Pour les callbacks non annulables que vous ne pouvez pas dés-enregistrer, utilisez `suspendCoroutine { c -> ... }` et appelez `c.resume(value)` quand le callback est appelé.
+
+Pour ceux qui sont annulables, insérez `Cancellable` entre `suspend` et `Coroutine`, puis gérer correctement l'annulation avec `try`/`finally` ou `c.invokeOnCancellation { ... }`.
+
+Rdv dans le fichier [exercises/exo4-callbacks-wrapping.kt](exercises/src/main/kotlin/exercises/exo4-callbacks-wrapping.kt)
+
 ### Suite : freestyle
 
 Quand vous avez terminé, tenez-nous au courant (ou levez le bras si on discute déjà avec un autre participant). On vous guidera pour aller plus loin avec les coroutines en fonction de ce qui vous intéresse ou de vos projets et des plateformes que vous ciblez (nous connaissons bien Kotlin/JVM, Kotlin/Android et Kotlin/Native).
+
+Aussi, ce projet Gradle inclus un serveur ktor à base coroutines, et un client correspondant que vous pourrez manipuler.
 
