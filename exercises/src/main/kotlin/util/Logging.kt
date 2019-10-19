@@ -12,20 +12,20 @@ import kotlin.time.MonoClock
  * Also logs the execution time in milliseconds.
  */
 @UseExperimental(ExperimentalContracts::class, ExperimentalTime::class)
-inline fun <R> withEnterAndExitLog(name: String, block: () -> R): R {
+inline fun <R> withEnterAndExitLog(tag: String, block: () -> R): R {
     contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    println("$name: called")
+    println("$tag: called")
     val startClockMark = MonoClock.markNow()
     try {
         val returnValue = block()
-        println("$name: returned in ${startClockMark.elapsedNow().toLongMilliseconds()}ms")
+        println("$tag: returned in ${startClockMark.elapsedNow().toLongMilliseconds()}ms")
         return returnValue
     } catch (t: Throwable) {
         val millis = startClockMark.elapsedNow().toLongMilliseconds()
         if (t is CancellationException) {
-            println("$name: was cancelled after ${millis}ms")
+            println("$tag: was cancelled after ${millis}ms")
         } else {
-            println("$name: threw after ${millis}ms")
+            println("$tag: threw after ${millis}ms")
         }
         throw t
     }

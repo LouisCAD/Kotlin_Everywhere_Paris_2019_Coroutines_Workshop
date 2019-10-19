@@ -1,9 +1,11 @@
-import kotlinx.coroutines.delay
+import util.log
 import util.withEnterAndExitLog
 
-suspend fun main() {
+fun main() {
+    withEnterAndExitLog("main") {
+        log("Workshop has just started, and it'll be a lot of fun!")
+    }
     withEnterAndExitLog("todo") {
-        delay(1000)
         TODO()
     }
 }
